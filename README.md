@@ -23,5 +23,8 @@ __NOTE: These steps below are instructions for Linux environment
 
 - Run the source code in localhost:
   ``` bash
-  yarn start
+  go build
   ```
+  ```bash
+  ./Quick-search-back-end
+```
