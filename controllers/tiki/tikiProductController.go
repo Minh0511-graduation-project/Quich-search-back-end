@@ -1,4 +1,4 @@
-package controllers
+package tiki
 
 import (
 	"Quick-search-back-end/configs"
@@ -15,7 +15,7 @@ import (
 
 var tikiProductCollection = configs.GetCollection(configs.DB, "tiki products")
 
-func GetAProduct() http.HandlerFunc {
+func GetProductsBySearchTerm() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		searchTerm := r.URL.Query().Get("searchTerm")
