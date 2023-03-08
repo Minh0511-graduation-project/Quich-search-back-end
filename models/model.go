@@ -4,7 +4,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type TikiProduct struct {
+type Product struct {
 	Id         primitive.ObjectID `json:"_id,omitempty" validate:"required"`
 	Name       string             `json:"name,omitempty" validate:"required"`
 	ImageUrl   string             `json:"imageUrl,omitempty" validate:"required"`
@@ -13,7 +13,7 @@ type TikiProduct struct {
 	Site       string             `json:"site,omitempty" validate:"required"`
 }
 
-type TikiSearchSuggestion struct {
+type SearchSuggestion struct {
 	Id          primitive.ObjectID `json:"id,omitempty" validate:"required"`
 	Keyword     string             `json:"keyword,omitempty" validate:"required"`
 	Site        string             `json:"site,omitempty" validate:"required"`

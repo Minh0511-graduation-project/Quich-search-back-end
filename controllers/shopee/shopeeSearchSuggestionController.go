@@ -1,4 +1,4 @@
-package tiki
+package shopee
 
 import (
 	"Quick-search-back-end/configs"
@@ -6,23 +6,22 @@ import (
 	"Quick-search-back-end/responses"
 	"context"
 	"encoding/json"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 	"time"
-
-	"go.mongodb.org/mongo-driver/bson"
 )
 
-var tikiProductCollection = configs.GetCollection(configs.DB, "tiki products")
+var shopeeSuggestionCollection = configs.GetCollection(configs.DB, "shopee search suggestions")
 
-func GetProductsBySearchTerm() http.HandlerFunc {
+func GetSuggestionsByKeyword() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		searchTerm := r.URL.Query().Get("searchTerm")
-		var tikiProduct []models.Product
+		keyword := r.URL.Query().Get("keyword")
+		var shopeeSuggestions []models.SearchSuggestion
 		defer cancel()
 
-		results, err := tikiProductCollection.Find(ctx, bson.M{"searchTerm": searchTerm})
+		results, err := shopeeSuggestionCollection.Find(ctx, bson.M{"keyword": keyword})
 
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
@@ -42,8 +41,8 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 			}
 		}(results, ctx)
 		for results.Next(ctx) {
-			var singleProduct models.Product
-			if err = results.Decode(&singleProduct); err != nil {
+			var suggestion models.SearchSuggestion
+			if err = results.Decode(&suggestion); err != nil {
 				rw.WriteHeader(http.StatusInternalServerError)
 				response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
 				err := json.NewEncoder(rw).Encode(response)
@@ -52,11 +51,11 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 				}
 			}
 
-			tikiProduct = append(tikiProduct, singleProduct)
+			shopeeSuggestions = append(shopeeSuggestions, suggestion)
 		}
 
 		rw.WriteHeader(http.StatusOK)
-		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": tikiProduct}}
+		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": shopeeSuggestions}}
 		err = json.NewEncoder(rw).Encode(response)
 		if err != nil {
 			return
@@ -64,13 +63,13 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 	}
 }
 
-func GetAllProducts() http.HandlerFunc {
+func GetAllSuggestions() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		var tikiProduct []models.Product
+		var shopeeSuggestions []models.SearchSuggestion
 		defer cancel()
 
-		results, err := tikiProductCollection.Find(ctx, bson.M{})
+		results, err := shopeeSuggestionCollection.Find(ctx, bson.M{})
 
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
@@ -90,8 +89,8 @@ func GetAllProducts() http.HandlerFunc {
 			}
 		}(results, ctx)
 		for results.Next(ctx) {
-			var singleProduct models.Product
-			if err = results.Decode(&singleProduct); err != nil {
+			var suggestion models.SearchSuggestion
+			if err = results.Decode(&suggestion); err != nil {
 				rw.WriteHeader(http.StatusInternalServerError)
 				response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
 				err := json.NewEncoder(rw).Encode(response)
@@ -100,11 +99,11 @@ func GetAllProducts() http.HandlerFunc {
 				}
 			}
 
-			tikiProduct = append(tikiProduct, singleProduct)
+			shopeeSuggestions = append(shopeeSuggestions, suggestion)
 		}
 
 		rw.WriteHeader(http.StatusOK)
-		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": tikiProduct}}
+		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": shopeeSuggestions}}
 		err = json.NewEncoder(rw).Encode(response)
 		if err != nil {
 			return

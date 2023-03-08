@@ -1,4 +1,4 @@
-package tiki
+package lazada
 
 import (
 	"Quick-search-back-end/configs"
@@ -6,23 +6,22 @@ import (
 	"Quick-search-back-end/responses"
 	"context"
 	"encoding/json"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 	"time"
-
-	"go.mongodb.org/mongo-driver/bson"
 )
 
-var tikiProductCollection = configs.GetCollection(configs.DB, "tiki products")
+var lazadaProductCollection = configs.GetCollection(configs.DB, "lazada products")
 
 func GetProductsBySearchTerm() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		searchTerm := r.URL.Query().Get("searchTerm")
-		var tikiProduct []models.Product
+		var lazadaProduct []models.Product
 		defer cancel()
 
-		results, err := tikiProductCollection.Find(ctx, bson.M{"searchTerm": searchTerm})
+		results, err := lazadaProductCollection.Find(ctx, bson.M{"searchTerm": searchTerm})
 
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
@@ -52,11 +51,11 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 				}
 			}
 
-			tikiProduct = append(tikiProduct, singleProduct)
+			lazadaProduct = append(lazadaProduct, singleProduct)
 		}
 
 		rw.WriteHeader(http.StatusOK)
-		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": tikiProduct}}
+		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": lazadaProduct}}
 		err = json.NewEncoder(rw).Encode(response)
 		if err != nil {
 			return
@@ -67,10 +66,10 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 func GetAllProducts() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		var tikiProduct []models.Product
+		var lazadaProduct []models.Product
 		defer cancel()
 
-		results, err := tikiProductCollection.Find(ctx, bson.M{})
+		results, err := lazadaProductCollection.Find(ctx, bson.M{})
 
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
@@ -100,11 +99,11 @@ func GetAllProducts() http.HandlerFunc {
 				}
 			}
 
-			tikiProduct = append(tikiProduct, singleProduct)
+			lazadaProduct = append(lazadaProduct, singleProduct)
 		}
 
 		rw.WriteHeader(http.StatusOK)
-		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": tikiProduct}}
+		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": lazadaProduct}}
 		err = json.NewEncoder(rw).Encode(response)
 		if err != nil {
 			return

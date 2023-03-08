@@ -19,7 +19,7 @@ func GetSuggestionsByKeyword() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		keyword := r.URL.Query().Get("keyword")
-		var tikiSuggestions []models.TikiSearchSuggestion
+		var tikiSuggestions []models.SearchSuggestion
 		defer cancel()
 
 		results, err := tikiSuggestionCollection.Find(ctx, bson.M{"keyword": keyword})
@@ -42,7 +42,7 @@ func GetSuggestionsByKeyword() http.HandlerFunc {
 			}
 		}(results, ctx)
 		for results.Next(ctx) {
-			var suggestion models.TikiSearchSuggestion
+			var suggestion models.SearchSuggestion
 			if err = results.Decode(&suggestion); err != nil {
 				rw.WriteHeader(http.StatusInternalServerError)
 				response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
@@ -67,7 +67,7 @@ func GetSuggestionsByKeyword() http.HandlerFunc {
 func GetAllSuggestions() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		var tikiSuggestions []models.TikiSearchSuggestion
+		var tikiSuggestions []models.SearchSuggestion
 		defer cancel()
 
 		results, err := tikiSuggestionCollection.Find(ctx, bson.M{})
@@ -90,7 +90,7 @@ func GetAllSuggestions() http.HandlerFunc {
 			}
 		}(results, ctx)
 		for results.Next(ctx) {
-			var suggestion models.TikiSearchSuggestion
+			var suggestion models.SearchSuggestion
 			if err = results.Decode(&suggestion); err != nil {
 				rw.WriteHeader(http.StatusInternalServerError)
 				response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
