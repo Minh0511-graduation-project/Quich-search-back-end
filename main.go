@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -18,5 +19,11 @@ func main() {
 	//routes
 	routes.UserRoute(router) //add this
 
-	log.Fatal(http.ListenAndServe(":6000", router))
+	handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+	)(router)
+
+	log.Fatal(http.ListenAndServe(":8000", router))
 }

@@ -2,6 +2,7 @@ package shopee
 
 import (
 	"Quick-search-back-end/configs"
+	"Quick-search-back-end/middlewares"
 	"Quick-search-back-end/models"
 	"Quick-search-back-end/responses"
 	"context"
@@ -54,6 +55,8 @@ func GetSuggestionsByKeyword() http.HandlerFunc {
 			shopeeSuggestions = append(shopeeSuggestions, suggestion)
 		}
 
+		middlewares.HandleCors(rw)
+
 		rw.WriteHeader(http.StatusOK)
 		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": shopeeSuggestions}}
 		err = json.NewEncoder(rw).Encode(response)
@@ -101,6 +104,8 @@ func GetAllSuggestions() http.HandlerFunc {
 
 			shopeeSuggestions = append(shopeeSuggestions, suggestion)
 		}
+
+		middlewares.HandleCors(rw)
 
 		rw.WriteHeader(http.StatusOK)
 		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": shopeeSuggestions}}

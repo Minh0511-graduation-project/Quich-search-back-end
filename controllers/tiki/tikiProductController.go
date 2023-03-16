@@ -2,6 +2,7 @@ package tiki
 
 import (
 	"Quick-search-back-end/configs"
+	"Quick-search-back-end/middlewares"
 	"Quick-search-back-end/models"
 	"Quick-search-back-end/responses"
 	"context"
@@ -55,6 +56,8 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 			tikiProduct = append(tikiProduct, singleProduct)
 		}
 
+		middlewares.HandleCors(rw)
+
 		rw.WriteHeader(http.StatusOK)
 		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": tikiProduct}}
 		err = json.NewEncoder(rw).Encode(response)
@@ -102,6 +105,8 @@ func GetAllProducts() http.HandlerFunc {
 
 			tikiProduct = append(tikiProduct, singleProduct)
 		}
+
+		middlewares.HandleCors(rw)
 
 		rw.WriteHeader(http.StatusOK)
 		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": tikiProduct}}

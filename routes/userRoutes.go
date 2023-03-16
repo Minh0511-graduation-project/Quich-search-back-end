@@ -13,41 +13,41 @@ func UserRoute(router *mux.Router) {
 	router.HandleFunc("/tiki/product", tiki.GetProductsBySearchTerm()).
 		Queries(
 			"searchTerm", "{searchTerm}",
-		).Methods("GET")
+		).Methods("GET", "OPTIONS")
 
-	router.HandleFunc("/tiki/product", tiki.GetAllProducts()).Methods("GET")
+	router.HandleFunc("/tiki/product", tiki.GetAllProducts()).Methods("GET", "OPTIONS")
 	router.HandleFunc("/tiki/suggestion", tiki.GetSuggestionsByKeyword()).
 		Queries(
 			"keyword", "{keyword}",
-		).Methods("GET")
+		).Methods("GET", "OPTIONS")
 
-	router.HandleFunc("/tiki/suggestion", tiki.GetAllSuggestions()).Methods("GET")
+	router.HandleFunc("/tiki/suggestion", tiki.GetAllSuggestions()).Methods("GET", "OPTIONS")
 
 	// lazada routes
 	router.HandleFunc("/lazada/product", lazada.GetProductsBySearchTerm()).
 		Queries(
 			"searchTerm", "{searchTerm}",
-		).Methods("GET")
+		).Methods("GET", "OPTIONS")
 
-	router.HandleFunc("/lazada/product", lazada.GetAllProducts()).Methods("GET")
+	router.HandleFunc("/lazada/product", lazada.GetAllProducts()).Methods("GET", "OPTIONS")
 	router.HandleFunc("/lazada/suggestion", lazada.GetSuggestionsByKeyword()).
 		Queries(
 			"keyword", "{keyword}",
-		).Methods("GET")
+		).Methods("GET", "OPTIONS")
 
-	router.HandleFunc("/lazada/suggestion", lazada.GetAllSuggestions()).Methods("GET")
+	router.HandleFunc("/lazada/suggestion", lazada.GetAllSuggestions()).Methods("GET", "OPTIONS")
 
 	// shopee routes
 	router.HandleFunc("/shopee/product", shopee.GetProductsBySearchTerm()).
 		Queries(
 			"searchTerm", "{searchTerm}",
-		).Methods("GET")
+		).Methods("GET", "OPTIONS")
 
-	router.HandleFunc("/shopee/product", shopee.GetAllProducts()).Methods("GET")
+	router.HandleFunc("/shopee/product", shopee.GetAllProducts()).Methods("GET", "OPTIONS")
 	router.HandleFunc("/shopee/suggestion", shopee.GetSuggestionsByKeyword()).
 		Queries(
 			"keyword", "{keyword}",
-		).Methods("GET")
+		).Methods("GET", "OPTIONS")
 
-	router.HandleFunc("/shopee/suggestion", shopee.GetAllSuggestions()).Methods("GET")
+	router.HandleFunc("/shopee/suggestion", shopee.GetAllSuggestions()).Methods("GET", "OPTIONS")
 }

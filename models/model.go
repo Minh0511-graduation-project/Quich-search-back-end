@@ -11,6 +11,7 @@ type Product struct {
 	Price      string             `json:"price,omitempty" validate:"required"`
 	SearchTerm string             `json:"searchTerm,omitempty" validate:"required"`
 	Site       string             `json:"site,omitempty" validate:"required"`
+	UpdatedAt  float64            `json:"updatedAt,omitempty" validate:"required"`
 }
 
 type SearchSuggestion struct {
@@ -18,4 +19,5 @@ type SearchSuggestion struct {
 	Keyword     string             `json:"keyword,omitempty" validate:"required"`
 	Site        string             `json:"site,omitempty" validate:"required"`
 	Suggestions []string           `json:"suggestions,omitempty" validate:"required"`
+	UpdatedAt   float64            `json:"updatedAt,omitempty" validate:"required"`
 }

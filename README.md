@@ -23,8 +23,9 @@ __NOTE: These steps below are instructions for Linux environment
 
 - Run the source code in localhost:
   ``` bash
-  go build
+  go build -o ./app
   ```
   ```bash
-  ./Quick-search-back-end
+    ./bin/main
+    ```
 ```
