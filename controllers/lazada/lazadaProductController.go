@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -19,10 +20,14 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		searchTerm := r.URL.Query().Get("searchTerm")
+		decodedSearchTerm, err := url.QueryUnescape(searchTerm)
+		if err != nil {
+			return
+		}
 		var lazadaProduct []models.Product
 		defer cancel()
 
-		results, err := lazadaProductCollection.Find(ctx, bson.M{"searchTerm": searchTerm})
+		results, err := lazadaProductCollection.Find(ctx, bson.M{"searchTerm": decodedSearchTerm})
 
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)

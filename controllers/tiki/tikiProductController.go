@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
+	"net/url"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,10 +21,14 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		searchTerm := r.URL.Query().Get("searchTerm")
+		decodedSearchTerm, err := url.QueryUnescape(searchTerm)
+		if err != nil {
+			return
+		}
 		var tikiProduct []models.Product
 		defer cancel()
 
-		results, err := tikiProductCollection.Find(ctx, bson.M{"searchTerm": searchTerm})
+		results, err := tikiProductCollection.Find(ctx, bson.M{"searchTerm": decodedSearchTerm})
 
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
