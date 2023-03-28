@@ -12,6 +12,7 @@ type Product struct {
 	SearchTerm string             `json:"searchTerm,omitempty" validate:"required"`
 	Site       string             `json:"site,omitempty" validate:"required"`
 	UpdatedAt  float64            `json:"updatedAt,omitempty" validate:"required"`
+	ProductUrl string             `json:"productUrl,omitempty" validate:"required"`
 }
 
 type SearchSuggestion struct {
