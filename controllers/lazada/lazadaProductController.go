@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -32,6 +33,7 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
 			response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			log.Println(response)
 			err := json.NewEncoder(rw).Encode(response)
 			if err != nil {
 				return
@@ -51,6 +53,7 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 			if err = results.Decode(&singleProduct); err != nil {
 				rw.WriteHeader(http.StatusInternalServerError)
 				response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+				log.Println(response)
 				err := json.NewEncoder(rw).Encode(response)
 				if err != nil {
 					return
@@ -64,6 +67,8 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 
 		rw.WriteHeader(http.StatusOK)
 		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": lazadaProduct}}
+		// print method and response status code
+		log.Println(response.Status)
 		err = json.NewEncoder(rw).Encode(response)
 		if err != nil {
 			return
@@ -82,6 +87,7 @@ func GetAllProducts() http.HandlerFunc {
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
 			response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			log.Println(response)
 			err := json.NewEncoder(rw).Encode(response)
 			if err != nil {
 				return
@@ -101,6 +107,7 @@ func GetAllProducts() http.HandlerFunc {
 			if err = results.Decode(&singleProduct); err != nil {
 				rw.WriteHeader(http.StatusInternalServerError)
 				response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+				log.Println(response)
 				err := json.NewEncoder(rw).Encode(response)
 				if err != nil {
 					return
@@ -114,6 +121,7 @@ func GetAllProducts() http.HandlerFunc {
 
 		rw.WriteHeader(http.StatusOK)
 		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": lazadaProduct}}
+		log.Println(response.Status)
 		err = json.NewEncoder(rw).Encode(response)
 		if err != nil {
 			return

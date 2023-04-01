@@ -22,3 +22,11 @@ type SearchSuggestion struct {
 	Suggestions []string           `json:"suggestions,omitempty" validate:"required"`
 	UpdatedAt   float64            `json:"updatedAt,omitempty" validate:"required"`
 }
+
+type KeywordCount struct {
+	Id        primitive.ObjectID `json:"_id,omitempty" validate:"required"`
+	Keyword   string             `json:"keyword,omitempty" validate:"required"`
+	Site      string             `json:"site,omitempty" validate:"required"`
+	Count     float64            `json:"count,omitempty" validate:"required"`
+	UpdatedAt float64            `json:"updatedAt,omitempty" validate:"required"`
+}

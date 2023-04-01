@@ -2,6 +2,7 @@ package routes
 
 import (
 	"Quick-search-back-end/controllers/lazada"
+	"Quick-search-back-end/controllers/searchCount"
 	"Quick-search-back-end/controllers/shopee"
 	"Quick-search-back-end/controllers/tiki"
 
@@ -50,4 +51,10 @@ func UserRoute(router *mux.Router) {
 		).Methods("GET", "OPTIONS")
 
 	router.HandleFunc("/shopee/suggestion", shopee.GetAllSuggestions()).Methods("GET", "OPTIONS")
+
+	router.HandleFunc("/suggestionCount", searchCount.GetCountByKeyword()).
+		Queries(
+			"keyword", "{keyword}",
+			"site", "{site}",
+		).Methods("GET", "OPTIONS")
 }

@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"log"
 	"net/http"
 	"time"
 )
@@ -27,6 +28,7 @@ func GetSuggestionsByKeyword() http.HandlerFunc {
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
 			response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			log.Println(response)
 			err := json.NewEncoder(rw).Encode(response)
 			if err != nil {
 				return
@@ -46,6 +48,7 @@ func GetSuggestionsByKeyword() http.HandlerFunc {
 			if err = results.Decode(&suggestion); err != nil {
 				rw.WriteHeader(http.StatusInternalServerError)
 				response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+				log.Println(response)
 				err := json.NewEncoder(rw).Encode(response)
 				if err != nil {
 					return
@@ -59,6 +62,7 @@ func GetSuggestionsByKeyword() http.HandlerFunc {
 
 		rw.WriteHeader(http.StatusOK)
 		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": lazadaSuggestions}}
+		log.Println(response.Status)
 		err = json.NewEncoder(rw).Encode(response)
 		if err != nil {
 			return
@@ -77,6 +81,7 @@ func GetAllSuggestions() http.HandlerFunc {
 		if err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
 			response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			log.Println(response)
 			err := json.NewEncoder(rw).Encode(response)
 			if err != nil {
 				return
@@ -96,6 +101,7 @@ func GetAllSuggestions() http.HandlerFunc {
 			if err = results.Decode(&suggestion); err != nil {
 				rw.WriteHeader(http.StatusInternalServerError)
 				response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+				log.Println(response)
 				err := json.NewEncoder(rw).Encode(response)
 				if err != nil {
 					return
@@ -109,6 +115,7 @@ func GetAllSuggestions() http.HandlerFunc {
 
 		rw.WriteHeader(http.StatusOK)
 		response := responses.UserResponse{Status: http.StatusOK, Message: "success", Data: map[string]interface{}{"data": lazadaSuggestions}}
+		log.Println(response.Status)
 		err = json.NewEncoder(rw).Encode(response)
 		if err != nil {
 			return
