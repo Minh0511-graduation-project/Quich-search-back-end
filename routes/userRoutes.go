@@ -59,4 +59,5 @@ func UserRoute(router *mux.Router) {
 		).Methods("GET", "OPTIONS")
 
 	router.HandleFunc("/shopee/topSearch", shopee.GetShopeeTopSearch())
+	router.HandleFunc("/tiki/topSearch", tiki.GetTikiTopSearch())
 }
