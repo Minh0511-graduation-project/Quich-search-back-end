@@ -24,6 +24,5 @@ func main() {
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
 		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
 	)(router)
-
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

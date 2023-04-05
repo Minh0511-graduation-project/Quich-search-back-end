@@ -57,4 +57,6 @@ func UserRoute(router *mux.Router) {
 			"keyword", "{keyword}",
 			"site", "{site}",
 		).Methods("GET", "OPTIONS")
+
+	router.HandleFunc("/shopee/topSearch", shopee.GetShopeeTopSearch())
 }
