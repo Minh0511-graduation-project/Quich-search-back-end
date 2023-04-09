@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"sort"
 	"time"
 )
 
@@ -62,6 +63,10 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 
 			shopeeProduct = append(shopeeProduct, singleProduct)
 		}
+
+		sort.Slice(shopeeProduct, func(i, j int) bool {
+			return shopeeProduct[i].UpdatedAt > shopeeProduct[j].UpdatedAt
+		})
 
 		middlewares.HandleCors(rw)
 
@@ -115,6 +120,10 @@ func GetAllProducts() http.HandlerFunc {
 
 			shopeeProduct = append(shopeeProduct, singleProduct)
 		}
+
+		sort.Slice(shopeeProduct, func(i, j int) bool {
+			return shopeeProduct[i].UpdatedAt > shopeeProduct[j].UpdatedAt
+		})
 
 		middlewares.HandleCors(rw)
 

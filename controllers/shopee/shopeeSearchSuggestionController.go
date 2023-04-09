@@ -16,6 +16,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
 	"time"
 )
 
@@ -62,6 +63,10 @@ func GetSuggestionsByKeyword() http.HandlerFunc {
 
 			shopeeSuggestions = append(shopeeSuggestions, suggestion)
 		}
+
+		sort.Slice(shopeeSuggestions, func(i, j int) bool {
+			return shopeeSuggestions[i].UpdatedAt > shopeeSuggestions[j].UpdatedAt
+		})
 
 		middlewares.HandleCors(rw)
 
@@ -115,6 +120,10 @@ func GetAllSuggestions() http.HandlerFunc {
 
 			shopeeSuggestions = append(shopeeSuggestions, suggestion)
 		}
+
+		sort.Slice(shopeeSuggestions, func(i, j int) bool {
+			return shopeeSuggestions[i].UpdatedAt > shopeeSuggestions[j].UpdatedAt
+		})
 
 		middlewares.HandleCors(rw)
 

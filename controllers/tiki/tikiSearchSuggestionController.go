@@ -16,6 +16,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -63,6 +64,10 @@ func GetSuggestionsByKeyword() http.HandlerFunc {
 
 			tikiSuggestions = append(tikiSuggestions, suggestion)
 		}
+
+		sort.Slice(tikiSuggestions, func(i, j int) bool {
+			return tikiSuggestions[i].UpdatedAt > tikiSuggestions[j].UpdatedAt
+		})
 
 		middlewares.HandleCors(rw)
 
@@ -116,6 +121,10 @@ func GetAllSuggestions() http.HandlerFunc {
 			tikiSuggestions = append(tikiSuggestions, suggestion)
 		}
 
+		sort.Slice(tikiSuggestions, func(i, j int) bool {
+			return tikiSuggestions[i].UpdatedAt > tikiSuggestions[j].UpdatedAt
+		})
+
 		middlewares.HandleCors(rw)
 
 		rw.WriteHeader(http.StatusOK)
@@ -134,13 +143,13 @@ type RequestBody struct {
 	PaymentModel     string `json:"payment_model"`
 }
 
-func GetTikiTopSearch() http.HandlerFunc {
+func GetTikiTopSearchByCategory() http.HandlerFunc {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 	return func(rw http.ResponseWriter, r *http.Request) {
-		shopeeTopSearchUrl := os.Getenv("TIKI_TOP_SEARCH_URL")
+		tikiTopSearchUrl := os.Getenv("TIKI_TOP_SEARCH_URL")
 		data := RequestBody{
 			ProductID:        []int{249220939},
 			ExcludedBusiness: 157998,
@@ -152,7 +161,46 @@ func GetTikiTopSearch() http.HandlerFunc {
 			return
 		}
 		client := &http.Client{}
-		req, err := http.NewRequest("POST", shopeeTopSearchUrl, bytes.NewBuffer(jsonData))
+		req, err := http.NewRequest("POST", tikiTopSearchUrl, bytes.NewBuffer(jsonData))
+		req.Header.Set("Content-Type", "application/json")
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		resp, err := client.Do(req)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		defer func(Body io.ReadCloser) {
+			err := Body.Close()
+			if err != nil {
+				return
+			}
+		}(resp.Body)
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		middlewares.HandleCors(rw)
+		_, err = rw.Write(body)
+		if err != nil {
+			return
+		}
+	}
+}
+
+func GetTikiTopSearchSuggestion() http.HandlerFunc {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	return func(rw http.ResponseWriter, r *http.Request) {
+		tikiTopSearchUrl := os.Getenv("TIKI_TOP_SEARCH_SUGGESTION")
+		client := &http.Client{}
+		req, err := http.NewRequest("GET", tikiTopSearchUrl, nil)
 		req.Header.Set("Content-Type", "application/json")
 		if err != nil {
 			fmt.Println(err)

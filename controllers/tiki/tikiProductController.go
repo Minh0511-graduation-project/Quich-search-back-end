@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"sort"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -64,6 +65,10 @@ func GetProductsBySearchTerm() http.HandlerFunc {
 			tikiProduct = append(tikiProduct, singleProduct)
 		}
 
+		sort.Slice(tikiProduct, func(i, j int) bool {
+			return tikiProduct[i].UpdatedAt > tikiProduct[j].UpdatedAt
+		})
+
 		middlewares.HandleCors(rw)
 
 		rw.WriteHeader(http.StatusOK)
@@ -116,6 +121,10 @@ func GetAllProducts() http.HandlerFunc {
 
 			tikiProduct = append(tikiProduct, singleProduct)
 		}
+
+		sort.Slice(tikiProduct, func(i, j int) bool {
+			return tikiProduct[i].UpdatedAt > tikiProduct[j].UpdatedAt
+		})
 
 		middlewares.HandleCors(rw)
 

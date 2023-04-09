@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"Quick-search-back-end/controllers/lazada"
 	"Quick-search-back-end/controllers/searchCount"
 	"Quick-search-back-end/controllers/shopee"
 	"Quick-search-back-end/controllers/tiki"
@@ -24,20 +23,6 @@ func UserRoute(router *mux.Router) {
 
 	router.HandleFunc("/tiki/suggestion", tiki.GetAllSuggestions()).Methods("GET", "OPTIONS")
 
-	// lazada routes
-	router.HandleFunc("/lazada/product", lazada.GetProductsBySearchTerm()).
-		Queries(
-			"searchTerm", "{searchTerm}",
-		).Methods("GET", "OPTIONS")
-
-	router.HandleFunc("/lazada/product", lazada.GetAllProducts()).Methods("GET", "OPTIONS")
-	router.HandleFunc("/lazada/suggestion", lazada.GetSuggestionsByKeyword()).
-		Queries(
-			"keyword", "{keyword}",
-		).Methods("GET", "OPTIONS")
-
-	router.HandleFunc("/lazada/suggestion", lazada.GetAllSuggestions()).Methods("GET", "OPTIONS")
-
 	// shopee routes
 	router.HandleFunc("/shopee/product", shopee.GetProductsBySearchTerm()).
 		Queries(
@@ -59,5 +44,5 @@ func UserRoute(router *mux.Router) {
 		).Methods("GET", "OPTIONS")
 
 	router.HandleFunc("/shopee/topSearch", shopee.GetShopeeTopSearch())
-	router.HandleFunc("/tiki/topSearch", tiki.GetTikiTopSearch())
+	router.HandleFunc("/tiki/topSearch", tiki.GetTikiTopSearchSuggestion())
 }
