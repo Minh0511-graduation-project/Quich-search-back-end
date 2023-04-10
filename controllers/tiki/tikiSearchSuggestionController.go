@@ -151,7 +151,7 @@ func GetTikiTopSearchByCategory() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		tikiTopSearchUrl := os.Getenv("TIKI_TOP_SEARCH_URL")
 		data := RequestBody{
-			ProductID:        []int{249220939},
+			ProductID:        []int{251392078},
 			ExcludedBusiness: 157998,
 			PaymentModel:     "CPC",
 		}
