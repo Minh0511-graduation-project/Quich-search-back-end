@@ -149,28 +149,33 @@ func GetTikiTopSearchByCategory() http.HandlerFunc {
 		log.Fatal("Error loading .env file")
 	}
 	return func(rw http.ResponseWriter, r *http.Request) {
-		tikiTopSearchUrl := os.Getenv("TIKI_TOP_SEARCH_URL")
-		data := RequestBody{
-			ProductID:        []int{251392078},
-			ExcludedBusiness: 157998,
-			PaymentModel:     "CPC",
+		if r.Method == http.MethodOptions {
+			middlewares.HandleCors(rw)
+			return
 		}
-		jsonData, err := json.Marshal(data)
+		tikiTopSearchUrl := os.Getenv("TIKI_TOP_SEARCH_URL")
+		var data RequestBody
+		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
-			fmt.Println(err)
+			http.Error(rw, err.Error(), http.StatusBadRequest)
 			return
 		}
 		client := &http.Client{}
+		jsonData, err := json.Marshal(data)
+		if err != nil {
+			http.Error(rw, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		fmt.Println(bytes.NewBuffer(jsonData))
 		req, err := http.NewRequest("POST", tikiTopSearchUrl, bytes.NewBuffer(jsonData))
 		req.Header.Set("Content-Type", "application/json")
 		if err != nil {
-			fmt.Println(err)
+			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
 		resp, err := client.Do(req)
 		if err != nil {
-			fmt.Println(err)
+			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		defer func(Body io.ReadCloser) {
@@ -181,10 +186,9 @@ func GetTikiTopSearchByCategory() http.HandlerFunc {
 		}(resp.Body)
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Println(err)
+			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		middlewares.HandleCors(rw)
 		_, err = rw.Write(body)
 		if err != nil {
 			return
