@@ -30,3 +30,9 @@ type KeywordCount struct {
 	Count     float64            `json:"count,omitempty" validate:"required"`
 	UpdatedAt float64            `json:"updatedAt,omitempty" validate:"required"`
 }
+
+type GetTikiTopSearchByCategoryRequestBody struct {
+	ProductID        []int  `json:"product_id"`
+	ExcludedBusiness int    `json:"excluded_business"`
+	PaymentModel     string `json:"payment_model"`
+}

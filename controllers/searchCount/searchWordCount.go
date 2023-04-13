@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"net/http"
 	"net/url"
@@ -75,6 +76,93 @@ func GetCountByKeyword() http.HandlerFunc {
 		log.Println(response.Status)
 		err = json.NewEncoder(rw).Encode(response)
 		if err != nil {
+			return
+		}
+	}
+}
+
+func GetShopeeTopSearch() http.HandlerFunc {
+	return func(rw http.ResponseWriter, r *http.Request) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		findOptions := options.Find()
+		findOptions.SetSort(bson.M{"count": -1})
+		findOptions.SetLimit(10)
+		filter := bson.M{"site": "shopee"}
+		cursor, err := tikiSuggestionCollection.Find(ctx, filter, findOptions)
+		if err != nil {
+			rw.WriteHeader(http.StatusInternalServerError)
+			response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			log.Println(response)
+			err := json.NewEncoder(rw).Encode(response)
+			if err != nil {
+				return
+			}
+			return
+		}
+		defer func(cursor *mongo.Cursor, ctx context.Context) {
+			err := cursor.Close(ctx)
+			if err != nil {
+				rw.WriteHeader(http.StatusInternalServerError)
+				response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+				log.Println(response)
+				err := json.NewEncoder(rw).Encode(response)
+				if err != nil {
+					return
+				}
+				return
+			}
+		}(cursor, ctx)
+
+		var keywordCounts []models.KeywordCount
+		for cursor.Next(ctx) {
+			var keywordCount models.KeywordCount
+			err := cursor.Decode(&keywordCount)
+			if err != nil {
+				rw.WriteHeader(http.StatusInternalServerError)
+				response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+				log.Println(response)
+				err := json.NewEncoder(rw).Encode(response)
+				if err != nil {
+					return
+				}
+				return
+			}
+			keywordCounts = append(keywordCounts, keywordCount)
+		}
+		err = cursor.Err()
+		if err != nil {
+			rw.WriteHeader(http.StatusInternalServerError)
+			response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			log.Println(response)
+			err := json.NewEncoder(rw).Encode(response)
+			if err != nil {
+				return
+			}
+			return
+		}
+		response := map[string]interface{}{
+			"data": keywordCounts,
+		}
+		userResponse := map[string]interface{}{
+			"status":  http.StatusOK,
+			"message": "success",
+			"data":    response,
+		}
+
+		middlewares.HandleCors(rw)
+
+		rw.WriteHeader(http.StatusOK)
+		err = json.NewEncoder(rw).Encode(userResponse)
+		if err != nil {
+			rw.WriteHeader(http.StatusInternalServerError)
+			response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			log.Println(response)
+			err := json.NewEncoder(rw).Encode(response)
+			if err != nil {
+				return
+			}
 			return
 		}
 	}

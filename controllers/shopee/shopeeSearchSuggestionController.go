@@ -137,7 +137,7 @@ func GetAllSuggestions() http.HandlerFunc {
 	}
 }
 
-func GetShopeeTopSearch() http.HandlerFunc {
+func GetShopeeTopSearchSuggestion() http.HandlerFunc {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")

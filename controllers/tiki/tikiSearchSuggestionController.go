@@ -137,12 +137,6 @@ func GetAllSuggestions() http.HandlerFunc {
 	}
 }
 
-type RequestBody struct {
-	ProductID        []int  `json:"product_id"`
-	ExcludedBusiness int    `json:"excluded_business"`
-	PaymentModel     string `json:"payment_model"`
-}
-
 func GetTikiTopSearchByCategory() http.HandlerFunc {
 	err := godotenv.Load()
 	if err != nil {
@@ -154,7 +148,7 @@ func GetTikiTopSearchByCategory() http.HandlerFunc {
 			return
 		}
 		tikiTopSearchUrl := os.Getenv("TIKI_TOP_SEARCH_URL")
-		var data RequestBody
+		var data models.GetTikiTopSearchByCategoryRequestBody
 		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusBadRequest)
@@ -166,7 +160,6 @@ func GetTikiTopSearchByCategory() http.HandlerFunc {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		fmt.Println(bytes.NewBuffer(jsonData))
 		req, err := http.NewRequest("POST", tikiTopSearchUrl, bytes.NewBuffer(jsonData))
 		req.Header.Set("Content-Type", "application/json")
 		if err != nil {
