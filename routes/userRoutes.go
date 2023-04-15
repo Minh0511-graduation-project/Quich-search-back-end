@@ -44,7 +44,11 @@ func UserRoute(router *mux.Router) {
 		).Methods("GET", "OPTIONS")
 
 	router.HandleFunc("/shopee/topSearchSuggestion", shopee.GetShopeeTopSearchSuggestion()).Methods("GET", "OPTIONS")
-	router.HandleFunc("/shopee/topSearch", searchCount.GetShopeeTopSearch()).Methods("GET", "OPTIONS")
+	router.HandleFunc("/shopee/topSearch", searchCount.GetShopeeTopSearch()).Queries(
+		"topDisplay", "{topDisplay}",
+	).Methods("GET", "OPTIONS")
 	router.HandleFunc("/tiki/topSearchSuggestion", tiki.GetTikiTopSearchSuggestion()).Methods("GET", "OPTIONS")
-	router.HandleFunc("/tiki/topSearchByCategory", tiki.GetTikiTopSearchByCategory()).Methods("POST", "OPTIONS")
+	router.HandleFunc("/tiki/topSearchByCategory", tiki.GetTikiTopSearchByCategory()).Queries(
+		"topDisplay", "{topDisplay}",
+	).Methods("POST", "OPTIONS")
 }

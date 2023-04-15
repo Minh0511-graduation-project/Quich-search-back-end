@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -87,8 +88,19 @@ func GetShopeeTopSearch() http.HandlerFunc {
 		defer cancel()
 
 		findOptions := options.Find()
+		topDisplay, err := strconv.ParseInt(r.URL.Query().Get("topDisplay"), 10, 64)
+		if err != nil {
+			rw.WriteHeader(http.StatusInternalServerError)
+			response := responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			log.Println(response)
+			err := json.NewEncoder(rw).Encode(response)
+			if err != nil {
+				return
+			}
+			return
+		}
 		findOptions.SetSort(bson.M{"count": -1})
-		findOptions.SetLimit(10)
+		findOptions.SetLimit(topDisplay)
 		filter := bson.M{"site": "shopee"}
 		cursor, err := tikiSuggestionCollection.Find(ctx, filter, findOptions)
 		if err != nil {

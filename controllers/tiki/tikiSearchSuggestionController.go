@@ -148,6 +148,8 @@ func GetTikiTopSearchByCategory() http.HandlerFunc {
 			return
 		}
 		tikiTopSearchUrl := os.Getenv("TIKI_TOP_SEARCH_URL")
+		topDisplay := r.URL.Query().Get("topDisplay")
+		tikiTopSearchUrl = tikiTopSearchUrl + topDisplay
 		var data models.GetTikiTopSearchByCategoryRequestBody
 		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
